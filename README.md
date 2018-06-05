@@ -61,3 +61,38 @@ This will take considerable time to run. Multiple datasets may be run simultaneo
 6. PNG versions of the cone projections, located in `DATA_SET/cone_projections`. These may be useful for deciding on a reference frame for registration in the next step.
 
 
+### Registration (`ao_fdml_foct_step_1_registration.py`)
+
+Strip-wise registration of volumes.
+
+#### Important parameters:
+
+1. `oversample_factor`: factor by which to oversample volumes in lateral dimensions before registering; typical value is 7
+
+2. `strip_width`: width of strips to be registered; this is the pre-oversampling width--after oversampling the strip width will be larger; typical value is 5
+
+3. `ref_idx`: choose a volume with a good cone mosaic; see `DATA_SET/cone_projections` to identify good candidates
+
+4. `ref_vol`: 0 or 1, depending on whether it's the forward or backward scan of the resonant scanner
+
+#### Running the script:
+
+1. In a shell navigate to `DATA_ROOT` with, e.g., `cd c:\Data`
+
+2. Invoke the script with one required parameter, the name of the dataset, e.g.: `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset`
+
+3. The script may be invoked with two additional optional parameters, the starting and ending index for frames to register. This permits dividing the data into parts and running the parts on separate cores. As is always the case in python, ranges are specified closed on the left and open on the right, i.e. [start,end). For example, to register 300 volumes, the following could be run in four separate terminals:
+
+    a. `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset 0 75`
+
+    b. `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset 75 150`
+    
+    c. `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset 150 225`
+    
+    d. `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset 225 300`
+
+
+#### Output of the script
+
+This script creates a directory `DATA_SET_registered_ref_REFIDX_REFVOL_Xx_Ww` where REFIDX, REFVOL, X, AND W represent the reference frame index, volume number (i.e., 0 or 1), oversampling factor X and strip width W. In this folder are the strip registration statistics used for rendering registered averages and locating cones for phase computations.
+
