@@ -56,7 +56,7 @@ This will take considerable time to run. Multiple datasets may be run simultaneo
 
 4. Flattening offsets, located in `DATA_SET/volumes/NNNN/flat_offsets.npy`, a `2 x n_slow x n_fast` array containing axial offsets which can be used to flatten the volumes.
 
-5. En face projections of various parts of the volume, located in `DATA_SET/volumes/NNNN/projections/`. These are `.npy` files, not `.png` files, so they cannot be viewed with an image viewer.
+5. En face projections of various parts of the volume, located in `DATA_SET/volumes/NNNN/projections/`. These are `.npy` files, not `.png` files, so they cannot be viewed with an image viewer. These are the files that can be rendered in the rendering step below.
 
 6. PNG versions of the cone projections, located in `DATA_SET/cone_projections`. These may be useful for deciding on a reference frame for registration in the next step.
 
@@ -95,4 +95,24 @@ Strip-wise registration of volumes.
 #### Output of the script
 
 This script creates a directory `DATA_SET_registered_ref_REFIDX_REFVOL_Xx_Ww` where REFIDX, REFVOL, X, AND W represent the reference frame index, volume number (i.e., 0 or 1), oversampling factor X and strip width W. In this folder are the strip registration statistics used for rendering registered averages and locating cones for phase computations.
+
+### Rendering (`ao_fdml_foct_step_2_render.py`)
+
+Rendering a registered average.
+
+#### Important parameters:
+
+1. `goodness_threshold`: minimum correlation required for match; the absolute values of correlation can vary substantially among datasets, so it's important to look at the histogram before selecting a value.
+
+2. `layer_names`: although the data are registered using cone mosaic projections, the resulting strip registration values can be used to render any of the images in the dataset's projections directories (see above).
+
+#### Running the script:
+
+1. In a shell navigate to `DATA_ROOT` with, e.g., `cd c:\Data`
+
+2. Invoke the script with one required parameter, the name of the registered dataset, e.g.: `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset_registered_ref_0001_01_7x_5w`
+
+#### Output of the script
+
+This script writes registered averages to the top level of the registration directory.
 
