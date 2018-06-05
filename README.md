@@ -28,7 +28,7 @@ All organization is relative to a data root folder whose location and name is no
 
 ## Running the scripts
 
-### Preprocessing
+### Preprocessing (`ao_fdml_foct_step_0_preprocessing.py`)
 
 Preprocessing consists of loading B-scans from .mat files, determining the fast (resonant) and slow (galvo) turnaround points, cropping the resonant-scanner-distorted portions out of the images, reordering A-scans into their spatial order (as opposed to temporal order) to correct for B-scans' resonant and galvo directions.
 
