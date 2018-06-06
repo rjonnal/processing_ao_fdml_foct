@@ -102,15 +102,17 @@ Rendering a registered average.
 
 #### Important parameters:
 
-1. `goodness_threshold`: minimum correlation required for match; the absolute values of correlation can vary substantially among datasets, so it's important to look at the histogram before selecting a value.
-
-2. `layer_names`: although the data are registered using cone mosaic projections, the resulting strip registration values can be used to render any of the images in the dataset's projections directories (see above).
+1. `layer_names`: although the data are registered using cone mosaic projections, the resulting strip registration values can be used to render any of the images in the dataset's projections directories (see above).
 
 #### Running the script:
 
 1. In a shell navigate to `DATA_ROOT` with, e.g., `cd c:\Data`
 
-2. Invoke the script with one required parameter, the name of the registered dataset, e.g.: `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset_registered_ref_0001_01_7x_5w`
+2. Invoke the script with one required parameter, the name of the registered dataset, e.g.: `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset_registered_ref_0001_01_7x_5w`. If invoked just like this, a histogram of "goodness" values will be shown.
+
+![Goodness histogram shows roughly the strip-correlation distribution. From this, a reasonable goodness value may be chosen (e.g. 1.5).](./goodness_hist.png)
+
+3. Invoke the script with two parameters--just as above, but add the goodness threshold, e.g.: `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset_registered_ref_0001_01_7x_5w 1.5`
 
 #### Output of the script
 
