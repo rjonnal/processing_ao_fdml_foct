@@ -36,7 +36,7 @@ Preprocessing consists of loading B-scans from .mat files, determining the fast 
 
 1. `scan_fraction`: fraction of B-scans used to compute the bulk en face projection which is used to determine turnarounds; smaller is faster and larger is more accurate/robust.
 
-2. `linear_left_x_start` and `linear_left_x_end`: the starting and ending pixels of the linear region of the forward resonant scanner sampling. Empirically, this should be between 45% and 63% of the scan time (e.g. 70 - 100 pixels for 160 pixel scans).
+2. `volume_left_x_start` and `volume_left_x_end`: the starting and ending pixels of the volumes; these can be set to 0 and 159, respectively, for scans of 160 pixels wide. However, the script makes an effort for the book-matched resonant scans to match. Therefore, if the forward scan spans a distance other than pixels 0 to 159, both the forward and reverse volumes will be cropped to matching regions. For example, if the forward volume spans pixels 10 to 170, the reverse volume should reside in pixels 170 to 330. Since, however, the volume ends at 320, the reverse volume is cropped to points 170 to 320 and the forward volume is cropped from 10 to 160, in mirror-image fashion.
 
 #### Running the script:
 
@@ -63,7 +63,7 @@ This will take considerable time to run. Multiple datasets may be run simultaneo
 
 ### Registration (`ao_fdml_foct_step_1_registration.py`)
 
-Strip-wise registration of volumes.
+Strip-wise registration of volumes. Before running this, look through the images in `DATA_SET/cone_projections` to identify a good reference candidate (i.e. with good cone mosaic quality, minimal visible motion artifacts, and good overlap with the frames soon after stimulus).
 
 #### Important parameters:
 
@@ -74,6 +74,11 @@ Strip-wise registration of volumes.
 3. `ref_idx`: choose a volume with a good cone mosaic; see `DATA_SET/cone_projections` to identify good candidates
 
 4. `ref_vol`: 0 or 1, depending on whether it's the forward or backward scan of the resonant scanner
+
+5. `left_crop`: the number of pixels to crop off the left edge of the image in order to remove sinusoidal artifacts. It is important to set this correctly, as the sinusoidal artifacts prevent effective registration of strips. The same number of pixels are cropped from the reference image and the target strips.
+
+6. `right_crop`: same as `left_crop` but for the right side of the image
+
 
 #### Running the script:
 
@@ -103,6 +108,8 @@ Rendering a registered average.
 #### Important parameters:
 
 1. `layer_names`: although the data are registered using cone mosaic projections, the resulting strip registration values can be used to render any of the images in the dataset's projections directories (see above).
+
+2. `left_crop` and `right_crop`: as with registration, portions of the image affected by sinusoidal resonant scanning may be cropped before rendering. This improves the overall correspondence of the registered strips, and prevents misaligned structures near the edges from reducing image quality. While the values should be equal or similar to those used for registration, the algorithm does not require this to be so.
 
 #### Running the script:
 

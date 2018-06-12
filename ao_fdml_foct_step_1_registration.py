@@ -14,12 +14,16 @@ except Exception as e:
     print e
 
 oversample_factor = 7
-strip_width = 5
+strip_width = 7
 ref_idx = 173
 ref_vol = 0
 do_plot = False
+left_crop = 45
+right_crop = 35
 
 all_files = glob.glob(os.path.join(tag,'volumes/*'))
+all_files.sort()
+
 
 # get current working directory to convert relative paths to absolute paths
 cwd = os.getcwd()
@@ -46,4 +50,4 @@ s.hive.put('strip_width',strip_width)
 
 for f in flist:
     for vidx in range(2):
-        s.add(f,vidx,layer_names=['CONES'],strip_width=strip_width,do_plot=do_plot,oversample_factor=oversample_factor)
+        s.add(f,vidx,layer_names=['CONES'],strip_width=strip_width,do_plot=do_plot,oversample_factor=oversample_factor,left_crop=left_crop,right_crop=right_crop)

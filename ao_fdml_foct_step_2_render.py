@@ -8,6 +8,10 @@ import scipy.optimize as soo
 from fig2gif import GIF
 import glob
 
+
+left_crop = 40
+right_crop = 45
+
 layer_names = ['CONES']
 
 try:
@@ -28,4 +32,4 @@ oversample_factor = s.hive.get('oversample_factor')[0]
 if goodness_threshold is None:
     s.goodness_histogram()
 else:
-    s.render(layer_names=layer_names,goodness_threshold=goodness_threshold,do_plot=do_plot,oversample_factor=oversample_factor,left_crop=20,right_crop=20)
+    s.render(layer_names=layer_names,goodness_threshold=goodness_threshold,do_plot=do_plot,oversample_factor=oversample_factor,left_crop=left_crop,right_crop=right_crop)

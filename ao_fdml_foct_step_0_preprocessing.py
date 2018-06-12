@@ -15,9 +15,9 @@ import glob
 # dataset tag for running in Spyder/IPython
 
 # important constants:
-linear_left_x_start = 30
-linear_left_x_end = 130
-redo = True # delete everything and start over
+volume_left_x_start = 0
+volume_left_x_end = 160
+redo = False # delete everything and start over
 
 try:
     tag = sys.argv[1].strip('/').strip('\\')
@@ -37,9 +37,6 @@ hive = Hive(tag)
 # coordinates for forward and backward linear regions
 # DataSet1 start 30 end 100
 
-
-hive.put('config/linear_left_x_start',linear_left_x_start)
-hive.put('config/linear_left_x_end',linear_left_x_end)
 
 #flist = ['./%s/AMP_L_%05d.mat'%(tag,k) for k in range(1,48000)]
 flist = glob.glob('%s/mat/*.mat'%tag)
@@ -117,13 +114,29 @@ for k in test_range:
     
 x_turnaround = test_range[np.argmax(hcorrs)]
 
-n_fast = linear_left_x_end-linear_left_x_start
-linear_right_x_start = x_turnaround+(x_turnaround-linear_left_x_start)
-linear_right_x_end = x_turnaround+(x_turnaround-linear_left_x_end)
-hive.put('config/n_fast',n_fast)
-hive.put('config/linear_right_x_start',linear_right_x_start)
-hive.put('config/linear_right_x_end',linear_right_x_end)
+volume_right_x_start = x_turnaround+(x_turnaround-volume_left_x_start)
+volume_right_x_end = x_turnaround+(x_turnaround-volume_left_x_end)
 
+x_max = en_face_projection.shape[1]
+
+# We need to make sure the start of the right side (flyback) volume
+# is within the measured data; this may not happen if the range is
+# set to 0,160 for the left side volume but the resonant scanner phase
+# is less than 0 at that pixel. The result will be that the desired
+# mirror image start will be beyond the edge of the image.
+while volume_right_x_start>=x_max:
+    volume_right_x_start-=1
+    volume_left_x_start+=1
+
+n_fast = volume_left_x_end-volume_left_x_start
+hive.put('config/volume_left_x_start',volume_left_x_start)
+hive.put('config/volume_left_x_end',volume_left_x_end)
+hive.put('config/n_fast',n_fast)
+hive.put('config/volume_right_x_start',volume_right_x_start)
+hive.put('config/volume_right_x_end',volume_right_x_end)
+
+
+    
 # Now we try to identify the y-galvo turnarounds
 # by walking down the projection and correlating adjacent
 # strips with one of them inverted.
@@ -226,8 +239,8 @@ for idx,y1 in enumerate(range(y_start,n_scans-n_slow,n_slow)):
             # insertion_index references the location in this volume series
             # in which to insert the data
             f = time_table[frame_index,:]
-            left = f[linear_left_x_start:linear_left_x_end]
-            right = f[linear_right_x_start:linear_right_x_end:-1]
+            left = f[volume_left_x_start:volume_left_x_end]
+            right = f[volume_right_x_start:volume_right_x_end:-1]
             data_time[0,insertion_index,:] = left
             data_time[1,insertion_index,:] = right
         hive.put('data_time',data_time)
@@ -246,8 +259,8 @@ for idx,y1 in enumerate(range(y_start,n_scans-n_slow,n_slow)):
             # insertion_index references the location in this volume series
             # in which to insert the data
             f = get(frame_index)
-            left = f[:,linear_left_x_start:linear_left_x_end]
-            right = f[:,linear_right_x_start:linear_right_x_end:-1]
+            left = f[:,volume_left_x_start:volume_left_x_end]
+            right = f[:,volume_right_x_start:volume_right_x_end:-1]
             processed_data[0,insertion_index,:,:] = left
             processed_data[1,insertion_index,:,:] = right
         hive.put('processed_data',processed_data)
