@@ -8,9 +8,9 @@ import scipy.optimize as soo
 from fig2gif import GIF
 import glob
 
-# for 2018... data:
+
 left_crop = 40
-right_crop = 50
+right_crop = 45
 
 layer_names = ['CONES']
 
@@ -26,18 +26,10 @@ except:
     
 do_plot = True
 
-# convert crop values of 0 to None for easier case handling later
-if not left_crop:
-    left_crop = None
-if not right_crop:
-    right_crop = None
-
 s = Series(tag)
 oversample_factor = s.hive.get('oversample_factor')[0]
-s.hive.put('goodness_threshold',goodness_threshold)
 
 if goodness_threshold is None:
     s.goodness_histogram()
 else:
     s.render(layer_names=layer_names,goodness_threshold=goodness_threshold,do_plot=do_plot,oversample_factor=oversample_factor,left_crop=left_crop,right_crop=right_crop)
-    s.render_volume(goodness_threshold=goodness_threshold,do_plot=do_plot,oversample_factor=oversample_factor,left_crop=left_crop,right_crop=right_crop)

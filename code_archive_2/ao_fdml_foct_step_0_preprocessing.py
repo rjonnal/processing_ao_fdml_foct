@@ -17,9 +17,6 @@ import glob
 # important constants:
 volume_left_x_start = 0
 volume_left_x_end = 160
-# set n_slow to None to automatically locate
-n_slow = 160
-
 redo = False # delete everything and start over
 
 try:
@@ -131,7 +128,6 @@ while volume_right_x_start>=x_max:
     volume_right_x_start-=1
     volume_left_x_start+=1
 
-    
 n_fast = volume_left_x_end-volume_left_x_start
 hive.put('config/volume_left_x_start',volume_left_x_start)
 hive.put('config/volume_left_x_end',volume_left_x_end)
@@ -140,15 +136,14 @@ hive.put('config/volume_right_x_start',volume_right_x_start)
 hive.put('config/volume_right_x_end',volume_right_x_end)
 
 
-
+    
 # Now we try to identify the y-galvo turnarounds
 # by walking down the projection and correlating adjacent
 # strips with one of them inverted.
 y_turnaround_corrs_fn = os.path.join('./tmp','%s_y_galvo_turnaround_corrs.npy'%tag)
-
 try:
     corrs = np.load(y_turnaround_corrs_fn)
-except Exception as e:
+except IOError as e:
     corrs = []
     for k in range(en_face_projection.shape[0]-test_width*2):
         try:
@@ -179,8 +174,7 @@ N = len(corrs)*4
 #plt.plot(corrs)
 #plt.show()
 
-
-spectrum = np.abs(np.fft.fftshift(np.fft.fft(corrs,n=N))[N//2:])
+spectrum = np.fft.fftshift(np.fft.fft(corrs,n=N))[N//2:]
 freq = np.fft.fftshift(np.fft.fftfreq(N))[N//2:]
 
 # zero a safe region, < 500 px, to avoid DC
@@ -189,8 +183,9 @@ peak_locations = utils.find_peaks(np.abs(spectrum))
 peak_heights = np.abs(spectrum[peak_locations])
 peak_index = peak_locations[np.argmax(peak_heights)]
 fundamental = freq[peak_index]
-if n_slow is None:
-    n_slow = int(round(1.0/fundamental))
+n_slow = int(round(1.0/fundamental))
+
+print n_slow
 
 # Now we need to identify the first turnaround to start the first volume.
 corr_means = []
@@ -201,7 +196,7 @@ for offset in range(n_slow):
     corr_means.append(np.sum(corrs[comb])/float(len(comb)))
     
 y_start = np.argmax(corr_means)+test_width
-
+    
 hive.put('config/n_slow',n_slow)
 hive.put('config/y_start',y_start)
       

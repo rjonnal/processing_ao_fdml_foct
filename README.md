@@ -109,17 +109,19 @@ Rendering a registered average.
 
 1. `layer_names`: although the data are registered using cone mosaic projections, the resulting strip registration values can be used to render any of the images in the dataset's projections directories (see above).
 
-2. `left_crop` and `right_crop`: as with registration, portions of the image affected by sinusoidal resonant scanning may be cropped before rendering. This improves the overall correspondence of the registered strips, and prevents misaligned structures near the edges from reducing image quality. While the values should be equal or similar to those used for registration, the algorithm does not require this to be so.
+2. `left_crop` and `right_crop`: as with registration, portions of the image affected by sinusoidal resonant scanning may be cropped before rendering. This improves the overall correspondence of the registered strips, and prevents misaligned structures near the edges from reducing image quality. While the values should be equal or similar to those used for registration, the algorithm does not require this to be so. 
 
 #### Running the script:
 
 1. In a shell navigate to `DATA_ROOT` with, e.g., `cd c:\Data`
 
-2. Invoke the script with one required parameter, the name of the registered dataset, e.g.: `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset_registered_ref_0001_01_7x_5w`. If invoked just like this, a histogram of "goodness" values will be shown.
+2. Invoke the script with one required parameter, the name of the registered dataset, e.g.: `python ao_fdml_foct_step_2_render.py 2018.06.01_00.00.00_my_special_dataset_registered_ref_0001_01_7x_5w`. If invoked just like this, a histogram of "goodness" values will be shown.
 
 ![Goodness histogram shows roughly the strip-correlation distribution. From this, a reasonable goodness value may be chosen (e.g. 1.5).](./goodness_hist.png)
 
-3. Invoke the script with two parameters--just as above, but add the goodness threshold, e.g.: `python ao_fdml_foct_step_1_registration.py 2018.06.01_00.00.00_my_special_dataset_registered_ref_0001_01_7x_5w 1.5`
+3. Invoke the script with two parameters--just as above, but add the goodness threshold, e.g.: `python ao_fdml_foct_step_2_render.py 2018.06.01_00.00.00_my_special_dataset_registered_ref_0001_01_7x_5w 1.5`
+
+4. This will take a long time--especially the volume regsistration portion.
 
 #### Output of the script
 
