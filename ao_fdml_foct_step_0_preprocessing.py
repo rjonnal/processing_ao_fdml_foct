@@ -400,3 +400,4 @@ for idx,y1 in enumerate(range(y_start,n_scans-n_slow,n_slow)):
             plt.title('volume %04d %02d'%(idx,vidx))
             plt.savefig(os.path.join(cone_projection_directory,'%04d_%02d.png'%(idx,vidx)))
             plt.close()
+            sio.savemat(os.path.join(cone_projection_directory,'%04d_%02d.mat'%(idx,vidx)),cone_proj)
